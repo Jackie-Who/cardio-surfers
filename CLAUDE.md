@@ -29,7 +29,7 @@ into a browser running Subway Surfers. You must jog in place or your inputs stop
 ## Environment
 
 - Python **3.12** (mediapipe has no 3.13+ wheels). Pin exact versions in `requirements.txt`.
-- Windows only for v1 — `pydirectinput-rgx` (SendInput scancodes), `winsound` for alerts.
+- Windows only for v1 — `pydirectinput-rgx` (SendInput scancodes), `sounddevice` for alerts.
 - Model: `pose_landmarker_lite.task`, fetched by `scripts/fetch_model.py`, not committed.
 
 ## Workflow
@@ -42,10 +42,11 @@ Tuning loop is `--replay fixtures/<name>.jsonl -vvv`, not live webcam iteration.
 
 ## Current phase
 
-All phases P0-P7 built (P8 exe packaging skipped). **Awaiting manual
-verification of the gesture layer** -- the pure-logic layer is covered by 152
-tests (152) including a bit-for-bit replay determinism check against
-`tests/fixtures/synthetic_run.jsonl`.
+All phases P0-P8 built and manually verified against a live camera, plus
+the v6 UI pass, overlay mode and the frozen build. Shipping from
+`Jackie-Who/cardio-surfers`; the .exe is published through GitHub Releases.
+The pure-logic layer is covered by **160 tests**, including a bit-for-bit
+replay determinism check against `tests/fixtures/synthetic_run.jsonl`.
 
 ## Spec revisions (v2, user-directed) on top of PLAN.md
 
@@ -104,9 +105,9 @@ tests (152) including a bit-for-bit replay determinism check against
    were always fine.
 7. **Window chrome:** the X closes the app (no q-to-quit), a back arrow in the
    header pops a screen-history stack, and `draw_button` renders a distinctly
-   brighter hover state. Beep volume is a real slider: `winsound.Beep` has no
-   volume, so `audio.synth_tone` builds an in-memory WAV at the requested
-   amplitude and `PlaySound` plays it.
+   brighter hover state. Beep volume is a real slider:
+   `audio.synth_tone` synthesises a tone at the requested amplitude and
+   `sounddevice` plays it (see invariant 13).
 8. **v6 UI: tokens + proportional layout.** `theme.py` owns every colour, font
    size and gap; `layout.py` computes every rect from the live window size.
    **No module may hardcode a pixel or a colour.** The window is
