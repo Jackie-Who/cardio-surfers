@@ -248,3 +248,15 @@ src/cardio_surfers/
   config.py    config merging; the only source of tunables
   probe.py     --probe self-test
 ```
+
+---
+
+## Licence
+
+MIT -- see [LICENSE](LICENSE). Third-party terms, the pose model's licence and
+a note on redistributing the built `.exe` are in [NOTICE.md](NOTICE.md).
+
+**Subway Surfers** is a trademark of SYBO Games ApS. This project is an
+unofficial input device with no affiliation to, or endorsement by, SYBO Games.
+It ships no game code or assets and works with anything that takes keyboard
+input.
