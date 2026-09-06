@@ -98,8 +98,8 @@ run with `-vvv` or watch the debug feed.
 ## Building a standalone .exe
 
 ```bash
-.venv\Scripts\python scriptsetch_model.py
-.venv\Scripts\python scriptsuild_exe.py --clean
+.venv\Scripts\python scripts\fetch_model.py
+.venv\Scripts\python scripts\build_exe.py --clean
 ```
 
 Produces `dist/CardioSurfers.exe` -- about 112 MB, one file, no Python needed
