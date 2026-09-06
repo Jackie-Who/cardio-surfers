@@ -408,7 +408,7 @@ src/cardio_surfers/
   probe.py         --probe self-test
 ```
 
-See [PLAN.md](PLAN.md) for the original spec and [CLAUDE.md](CLAUDE.md) for the
+See [docs/PLAN.md](docs/PLAN.md) for the original spec and [CLAUDE.md](CLAUDE.md) for the
 invariants and how the design changed along the way.
 
 ---

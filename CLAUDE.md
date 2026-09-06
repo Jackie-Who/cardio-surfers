@@ -1,6 +1,6 @@
 # Cardio Surfers — working agreement
 
-Read `PLAN.md` for the full spec. This file is the short list of things that must stay true
+Read `docs/PLAN.md` for the original spec (superseded in places -- see below). This file is the short list of things that must stay true
 in every session, because they're the ones that get quietly violated and cost a day later.
 
 ## Project in one line
@@ -16,7 +16,7 @@ into a browser running Subway Surfers. You must jog in place or your inputs stop
 2. **No `print()` outside `telemetry.py`.** Everything goes through the event bus and the
    threaded telemetry sink. Console I/O on Windows blocks and eats the latency budget.
 3. **No magic numbers.** Every threshold, window, gap and cutoff comes from `config.json`.
-   The numbers in PLAN.md are defaults for `config.example.json`, not literals for code.
+   The numbers in `docs/PLAN.md` are defaults for `config.example.json`, not literals for code.
 4. **Normalized coordinates only.** `[0,1]` space or torso-lengths everywhere; pixels appear
    only in `overlay.py` at draw time.
 5. **One event bus.** Key sender, HUD, console, JSONL log and stats are all subscribers to
@@ -34,7 +34,7 @@ into a browser running Subway Surfers. You must jog in place or your inputs stop
 
 ## Workflow
 
-Build **one phase from PLAN.md §13, then stop** and hand back for manual verification.
+Build **one phase from `docs/PLAN.md` §13, then stop** and hand back for manual verification.
 Most acceptance criteria need a human standing in front of a camera; you cannot self-verify
 that a squat registers. What you *can* verify alone is the pure-logic layer — run the tests.
 
@@ -48,7 +48,7 @@ the v6 UI pass, overlay mode and the frozen build. Shipping from
 The pure-logic layer is covered by **160 tests**, including a bit-for-bit
 replay determinism check against `tests/fixtures/synthetic_run.jsonl`.
 
-## Spec revisions (v2, user-directed) on top of PLAN.md
+## Spec revisions (v2, user-directed) on top of `docs/PLAN.md`
 
 1. **Close range.** Target distance is 1-2 m from a desk webcam, not 2.5-3 m.
 2. **Shoulder-bounce running detection (v3).** `features.run_signal: "bounce"`:

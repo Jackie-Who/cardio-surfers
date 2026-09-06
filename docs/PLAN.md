@@ -6,6 +6,20 @@
 
 ---
 
+> ## This is the original spec, kept for reference. It is not current.
+>
+> The code moved on from it in ways that matter. This document still says
+> 2.5-3 m range and knee-lift detection; the app targets 1-2 m at a desk and
+> detects a shoulder bounce. The jump/duck lines here are offsets from a
+> neutral posture; they are now absolute screen positions. Sections 3 and 11
+> describe a CLI; the app is a single window.
+>
+> **The current, accurate description of the system is [CLAUDE.md](../CLAUDE.md)**,
+> whose "Spec revisions" section lists what changed and why. The `PLAN §N`
+> citations throughout the source point here, which is why this file is kept.
+
+---
+
 ## 1. What we're building
 
 A webcam sits in front of you. You **jog in place** the whole time. You step left, step right, jump, and squat to dodge. The app watches your body, decides what you just did, and injects the corresponding key press into whatever window has focus — a browser running a Subway Surfers web port. The game knows nothing about us; we're a virtual keyboard driven by a pose model.
