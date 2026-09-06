@@ -114,8 +114,8 @@ run with `-vvv` or watch the debug feed.
 
 ## Building the .exe yourself
 
-Only needed if you are changing the code -- releases are built
-automatically by GitHub Actions from a version tag.
+Only needed if you are changing the code. Downloads come from the
+[Releases page](https://github.com/Jackie-Who/cardio-surfers/releases).
 
 
 ```bash
