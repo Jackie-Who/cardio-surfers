@@ -1,0 +1,6 @@
+-r requirements.txt
+
+pytest==9.1.1
+
+# One-file Windows build: python scripts/build_exe.py
+pyinstaller==6.18.0

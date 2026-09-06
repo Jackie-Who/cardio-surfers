@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cardio Surfers - key test</title>
+<style>
+  :root { color-scheme: dark; }
+  body { background:#14171c; color:#e8ecf1; font:15px/1.5 system-ui,sans-serif;
+         margin:0; padding:24px; }
+  h1 { font-size:19px; margin:0 0 4px; }
+  p.sub { color:#93a0b0; margin:0 0 18px; }
+  .row { display:flex; gap:18px; align-items:flex-start; flex-wrap:wrap; }
+  .panel { background:#1c2027; border:1px solid #2c323c; border-radius:8px;
+           padding:14px 16px; min-width:260px; }
+  .panel h2 { font-size:13px; text-transform:uppercase; letter-spacing:.08em;
+              color:#93a0b0; margin:0 0 10px; }
+  table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; }
+  th, td { text-align:left; padding:3px 10px 3px 0; }
+  th { color:#93a0b0; font-weight:500; font-size:12px; }
+  tr.down td { color:#7ee787; }
+  tr.up   td { color:#79b8ff; }
+  .gap-ok   { color:#7ee787; }
+  .gap-bad  { color:#ff7b72; }
+  .big { font-size:30px; font-variant-numeric:tabular-nums; }
+  code { background:#262c35; padding:1px 5px; border-radius:4px; }
+  button { background:#2c323c; color:#e8ecf1; border:1px solid #3a424e;
+           border-radius:6px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  #log { max-height:340px; overflow-y:auto; }
+</style>
+</head>
+<body>
+<h1>Cardio Surfers &mdash; key test</h1>
+<p class="sub">
+  Click here first, then let the app send keys. Logs <code>keydown</code> /
+  <code>keyup</code> with <code>event.code</code> and timestamps.
+  This is how you check that <strong>both presses of a double survive</strong>
+  (PLAN &sect;12.7) &mdash; separately from whether the game likes them.
+</p>
+
+<div class="row">
+  <div class="panel">
+    <h2>Doubles</h2>
+    <p>Gap between consecutive presses of the <em>same</em> key:</p>
+    <div class="big" id="gap">&mdash;</div>
+    <p class="sub" id="gapnote">
+      Target is <code>keys.multi_press_gap_ms</code> (default 110 ms).
+      Under ~60 ms a web port will very likely merge them into one.
+    </p>
+    <p>Same-key pairs seen: <strong id="pairs">0</strong></p>
+  </div>
+
+  <div class="panel">
+    <h2>Counts</h2>
+    <table id="counts"><tbody></tbody></table>
+    <p><button onclick="reset()">Reset</button></p>
+  </div>
+</div>
+
+<div class="panel" id="log" style="margin-top:18px">
+  <h2>Event log</h2>
+  <table>
+    <thead><tr><th>t (ms)</th><th>type</th><th>code</th><th>key</th><th>&Delta; same key</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+<script>
+const t0 = performance.now();
+const counts = new Map();
+const lastDownAt = new Map();
+let pairs = 0;
+
+function reset() {
+  counts.clear(); lastDownAt.clear(); pairs = 0;
+  document.getElementById('rows').innerHTML = '';
+  document.getElementById('counts').querySelector('tbody').innerHTML = '';
+  document.getElementById('gap').textContent = '—';
+  document.getElementById('pairs').textContent = '0';
+}
+
+function render(type, ev, delta) {
+  const tr = document.createElement('tr');
+  tr.className = type === 'keydown' ? 'down' : 'up';
+  const cells = [
+    (performance.now() - t0).toFixed(1),
+    type,
+    ev.code,
+    ev.key,
+    delta === null ? '' : delta.toFixed(1) + ' ms'
+  ];
+  for (const text of cells) {
+    const td = document.createElement('td');
+    td.textContent = text;
+    tr.appendChild(td);
+  }
+  const rows = document.getElementById('rows');
+  rows.insertBefore(tr, rows.firstChild);
+  while (rows.children.length > 200) rows.removeChild(rows.lastChild);
+}
+
+function renderCounts() {
+  const body = document.getElementById('counts').querySelector('tbody');
+  body.innerHTML = '';
+  for (const [code, n] of [...counts.entries()].sort()) {
+    const tr = document.createElement('tr');
+    for (const text of [code, String(n)]) {
+      const td = document.createElement('td');
+      td.textContent = text;
+      tr.appendChild(td);
+    }
+    body.appendChild(tr);
+  }
+}
+
+window.addEventListener('keydown', ev => {
+  const now = performance.now();
+  let delta = null;
+  if (lastDownAt.has(ev.code) && !ev.repeat) {
+    delta = now - lastDownAt.get(ev.code);
+    // Only a tight pair says anything about double delivery; a gap of seconds
+    // is just two unrelated presses.
+    if (delta < 600) {
+      pairs += 1;
+      const el = document.getElementById('gap');
+      el.textContent = delta.toFixed(1) + ' ms';
+      el.className = 'big ' + (delta >= 60 ? 'gap-ok' : 'gap-bad');
+      document.getElementById('pairs').textContent = String(pairs);
+    }
+  }
+  if (!ev.repeat) lastDownAt.set(ev.code, now);
+  counts.set(ev.code, (counts.get(ev.code) || 0) + 1);
+  renderCounts();
+  render('keydown', ev, delta);
+  // Arrow keys scroll the page otherwise, which makes the log jump around.
+  if (ev.code.startsWith('Arrow') || ev.code === 'Space') ev.preventDefault();
+});
+
+window.addEventListener('keyup', ev => render('keyup', ev, null));
+</script>
+</body>
+</html>

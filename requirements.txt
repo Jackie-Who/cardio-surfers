@@ -1,0 +1,26 @@
+# Exact versions, not ranges (PLAN §16.6) -- the MediaPipe Tasks API surface has
+# moved before, and a silent minor bump is not a debugging session anyone wants.
+#
+# Python 3.12. Do NOT create the venv on 3.13+: mediapipe has no wheels for it.
+
+mediapipe==1.0.1
+
+# NOT opencv-python. mediapipe depends on opencv-contrib-python, and installing
+# both puts two distributions in the same cv2/ directory where whichever landed
+# last silently wins. One OpenCV, pinned, contrib flavour.
+opencv-contrib-python==4.14.0.94
+
+numpy==2.5.2
+
+# SendInput with scancodes rather than virtual key codes (PLAN §8).
+pydirectinput-rgx==2.1.3
+
+# Global F8 arm/disarm hotkey on its own thread.
+pynput==1.8.2
+
+# Foreground window title for the focus gate.
+PyGetWindow==0.0.9
+
+# Real camera device names. Walks the same DirectShow enumeration that
+# OpenCV's CAP_DSHOW indexes into, so list position N is camera index N.
+pygrabber==0.2

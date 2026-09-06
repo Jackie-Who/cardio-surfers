@@ -1,0 +1,214 @@
+{
+  "_comment": "Defaults for every tunable. Copy to config.json (or let calibration write it) and edit there. No module may hardcode any of these -- PLAN 16.3. Revision 7: Cardio Surfers -- TrueType UI, audio device selection, game overlay mode.",
+  "camera": {
+    "index": 0,
+    "width": 640,
+    "height": 360,
+    "process_width": 640,
+    "fps": 30,
+    "backend": "dshow",
+    "flip": true,
+    "first_frame_timeout_s": 2.5,
+    "backend_fallback": false
+  },
+  "pose": {
+    "model_path": "models/pose_landmarker_lite.task",
+    "num_poses": 1,
+    "min_pose_detection_confidence": 0.5,
+    "min_pose_presence_confidence": 0.5,
+    "min_tracking_confidence": 0.5,
+    "visibility_threshold": 0.5
+  },
+  "features": {
+    "run_signal": "bounce",
+    "arm_landmark": "wrist",
+    "cx_hip_weight": 0.0,
+    "scale_ratio": 1.35
+  },
+  "filters": {
+    "type": "one_euro",
+    "one_euro": {
+      "cx": {
+        "min_cutoff": 1.0,
+        "beta": 0.5,
+        "d_cutoff": 1.0
+      },
+      "shoulder_y": {
+        "min_cutoff": 2.0,
+        "beta": 3.0,
+        "d_cutoff": 1.0
+      },
+      "scale": {
+        "min_cutoff": 1.0,
+        "beta": 0.5,
+        "d_cutoff": 1.0
+      },
+      "d": {
+        "min_cutoff": 1.5,
+        "beta": 0.5,
+        "d_cutoff": 1.0
+      },
+      "bounce": {
+        "min_cutoff": 4.0,
+        "beta": 0.5,
+        "d_cutoff": 1.0
+      }
+    },
+    "ema_alpha": 0.5
+  },
+  "lanes": {
+    "mode": "thirds",
+    "boundary_left": null,
+    "boundary_right": null,
+    "thirds": [
+      0.3333,
+      0.6667
+    ],
+    "hysteresis": 0.03,
+    "post_jump_suppress_ms": 150
+  },
+  "vertical": {
+    "jump_y": null,
+    "duck_y": null,
+    "default_jump_y": 0.3,
+    "default_duck_y": 0.62,
+    "exit_band": 0.02,
+    "nudge": 0.01,
+    "line_range": [
+      0.02,
+      0.98
+    ],
+    "refractory_ms": 400,
+    "max_jump_ms": 800,
+    "max_duck_ms": 1500
+  },
+  "arming": {
+    "tpose_hold_ms": 700,
+    "tpose_wrist_y_tol": 0.07,
+    "tpose_min_span_ratio": 2.0,
+    "cooldown_ms": 2000
+  },
+  "running": {
+    "bounce_amp": 0.008,
+    "bounce_detrend_window_s": 0.8,
+    "step_amp": 0.1,
+    "step_noise_floor_ratio": 0.4,
+    "cadence_window_s": 3.0,
+    "min_cadence_spm": 96,
+    "grace_ms": 1500,
+    "warning_ms": 3000,
+    "resume_ms": 1000,
+    "startup_grace_ms": 3000,
+    "post_lane_freeze_ms": 250,
+    "vertical_pause_ms": 1000,
+    "gate_enforced": true,
+    "audio_warnings": true,
+    "audio_volume": 0.6,
+    "warn_beep_hz": 880,
+    "warn_beep_ms": 120,
+    "warn_beep_repeat_ms": 750,
+    "lock_beep_hz": 440,
+    "spm_hold_ms": 1000,
+    "prime_on_arm": true,
+    "audio_device": null
+  },
+  "keys": {
+    "mapping": "wasd",
+    "presets": {
+      "arrows": {
+        "left": "left",
+        "right": "right",
+        "jump": "up",
+        "duck": "down",
+        "start": "space"
+      },
+      "wasd": {
+        "left": "a",
+        "right": "d",
+        "jump": "w",
+        "duck": "s",
+        "start": "space"
+      }
+    },
+    "hold_ms": 60,
+    "multi_press_gap_ms": 110,
+    "focus_regex": "",
+    "arm_hotkey": "f8",
+    "start_armed": false,
+    "send_start_on_arm": true
+  },
+  "calibration": {
+    "frames_per_step": 60,
+    "countdown_s": 3,
+    "jog_seconds": 8,
+    "jump_capture_s": 3.0,
+    "derive": {
+      "jump_offset": {
+        "factor": 0.55,
+        "min": 0.02,
+        "max": 0.3
+      },
+      "duck_offset": {
+        "factor": 0.75,
+        "min": 0.04,
+        "max": 0.5
+      },
+      "min_cadence_spm": {
+        "factor": 0.5,
+        "min": 60.0,
+        "max": 140.0
+      },
+      "step_amp": {
+        "factor": 0.45,
+        "min": 0.06,
+        "max": 0.3
+      },
+      "bounce_amp": {
+        "factor": 0.3,
+        "min": 0.003,
+        "max": 0.05
+      },
+      "lane_hysteresis": {
+        "factor": 2.5,
+        "min": 0.015,
+        "max": 0.06
+      }
+    },
+    "validate": {
+      "min_lane_offset": 0.05,
+      "min_lane_half_width": 0.04,
+      "min_jump_rise": 0.03,
+      "min_duck_drop": 0.04,
+      "min_d_amplitude": 0.08,
+      "min_bounce_amplitude": 0.004,
+      "max_hysteresis_vs_half_width": 0.6
+    },
+    "measured": null
+  },
+  "telemetry": {
+    "queue_size": 256,
+    "ticker_hz": 5,
+    "color": true,
+    "latency_window": 240
+  },
+  "ui": {
+    "window_name": "Cardio Surfers",
+    "window_x": 20,
+    "window_y": 20,
+    "width": 1024,
+    "height": 600,
+    "event_history": 7,
+    "sparkline_seconds": 3.0,
+    "key_flash_ms": 400,
+    "gesture_flash_ms": 600,
+    "min_width": 900,
+    "min_height": 560,
+    "drag_grab_px": 14,
+    "overlay_position": "top-left",
+    "lane_flash_ms": 450
+  },
+  "probe": {
+    "max_camera_index": 6,
+    "sample_seconds": 5.0
+  }
+}

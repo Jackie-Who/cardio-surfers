@@ -1,0 +1,36 @@
+# -- large local content, never part of the repo -----------------------------
+# The video project living inside this folder is ~12 GB. Committing it would
+# blow past GitHub's file-size limits and make the repo unusable.
+VIDEO THINGS/
+
+# The pose model is fetched, never committed (PLAN §16.7) -- 5.8 MB, and it
+# would go stale against upstream.
+models/*.task
+
+# Calibration is per-person and per-room, and holds your camera choice.
+config.json
+
+# -- build output -------------------------------------------------------------
+.venv/
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.py[cod]
+
+# -- test and tooling caches --------------------------------------------------
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# -- telemetry, recordings, sessions ------------------------------------------
+*.jsonl
+!tests/fixtures/*.jsonl
+session-*.json
+sessions/
+
+# -- editor / OS --------------------------------------------------------------
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
