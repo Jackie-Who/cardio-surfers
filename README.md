@@ -1,8 +1,9 @@
 # Cardio Surfers
 
-Webcam pose tracking → lane / jump / duck / running detection → Win32 key
-injection into a browser running Subway Surfers. **You jog in place (arms
-pumping) the whole time; stop moving and your inputs stop working.**
+Turn Subway Surfers into a cardio workout. A webcam watches you jog in place
+and drives the game with your body: **stop running and your controls lock
+out.** Pose tracking feeds lane, jump, duck and cadence detection, which
+becomes real keyboard input into whatever window has focus.
 
 Built for **desk range**: stand 1–2 m from an ordinary webcam with your
 shoulders in the upper third of the frame. Side-to-side is your torso centre
@@ -10,9 +11,25 @@ line, jump/duck is your shoulder line crossing the drawn threshold lines, and
 running is the **bounce of your shoulders** as you jog — no arm swing, no knees.
 
 See [PLAN.md](PLAN.md) for the original spec and [CLAUDE.md](CLAUDE.md) for
-the invariants and the v2 revisions.
+the invariants and how the design changed along the way.
 
 ---
+
+## Download
+
+**[Get the latest CardioSurfers.exe](https://github.com/Jackie-Who/cardio-surfers/releases/latest)**
+
+One file, no install, no Python. Put it somewhere writable (your Desktop, not
+`Program Files`) -- it saves `config.json` beside itself, which is where your
+calibration lives. Windows 10 or later, plus a webcam.
+
+Windows SmartScreen will say the publisher is unknown, because the build is
+not code-signed. **More info -> Run anyway.**
+
+Then: **Calibrate** (six prompts, about 45 seconds), open your game, hit
+**Play**, and hold a **T-pose** to arm and start.
+
+Everything below is for running or modifying the source.
 
 ## Setup
 
@@ -95,7 +112,11 @@ Every decision *not* to press a key is logged with a reason
 (`GATE_LOCKED`, `NOT_ARMED`, `WINDOW_FOCUS`, `REFRACTORY`, `HYSTERESIS`, …) —
 run with `-vvv` or watch the debug feed.
 
-## Building a standalone .exe
+## Building the .exe yourself
+
+Only needed if you are changing the code -- releases are built
+automatically by GitHub Actions from a version tag.
+
 
 ```bash
 .venv\Scripts\python scripts\fetch_model.py

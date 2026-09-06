@@ -1,0 +1,56 @@
+name: Tests
+
+# The pure-logic layer runs headless, so every push can check it: the FSMs,
+# the layout maths, the invariant scans (no print outside telemetry, no clock
+# reads inside the state machines) and replay determinism.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install -e .
+
+      - name: Run the test suite
+        run: python -m pytest -q
+
+      - name: Check replay is deterministic
+        # Two runs of the same fixture must produce byte-identical events.
+        # This is what makes threshold tuning trustworthy, so it is worth
+        # proving on every push rather than only locally.
+        shell: bash
+        run: |
+          for i in 1 2; do
+            python -m cardio_surfers --replay tests/fixtures/synthetic_run.jsonl \
+              --config tests/no-such-config.json --log-file "run$i.jsonl" > /dev/null 2>&1
+          done
+          python - <<'PY'
+          import json
+          keep = ("LANE_CHANGE", "JUMP", "DUCK", "STEP", "GATE", "KEY_PRESS", "SUPPRESSED")
+          def events(path):
+              return [l for l in open(path, encoding="utf-8")
+                      if json.loads(l)["event"] in keep]
+          a, b = events("run1.jsonl"), events("run2.jsonl")
+          assert a, "replay produced no events at all"
+          assert a == b, "replay is not deterministic"
+          print(f"replay deterministic across {len(a)} events")
+          PY

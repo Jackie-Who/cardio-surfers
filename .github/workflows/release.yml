@@ -1,0 +1,94 @@
+name: Release
+
+# Builds the Windows executable and attaches it to a GitHub Release, so people
+# can download and run it without installing Python or building anything.
+#
+# Trigger it by pushing a version tag:
+#
+#     git tag v0.1.0
+#     git push origin v0.1.0
+#
+# Or run it by hand from the Actions tab ("Run workflow") to test the build
+# without publishing a release.
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write        # required to create the release and upload the asset
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          # 3.12 exactly: mediapipe publishes no wheels for 3.13+.
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+          pip install -e .
+
+      - name: Run the test suite
+        run: python -m pytest -q
+
+      - name: Fetch the pose model
+        # Not committed (5.8 MB, and it would go stale against upstream), so
+        # the build has to download it first.
+        run: python scripts/fetch_model.py
+
+      - name: Build the executable
+        run: python scripts/build_exe.py --clean
+
+      - name: Check the executable actually runs
+        # A build that produces a broken binary is worse than a failed build:
+        # --version exercises the frozen entry point and the bundled package.
+        run: .\dist\CardioSurfers.exe --version
+
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CardioSurfers-exe
+          path: dist/CardioSurfers.exe
+          retention-days: 14
+
+      - name: Publish the release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/CardioSurfers.exe
+          generate_release_notes: true
+          body: |
+            ## Download
+
+            Grab **CardioSurfers.exe** below. No Python, no install --
+            it is one file, about 110 MB, and bundles OpenCV, MediaPipe and
+            the pose model.
+
+            **Put it somewhere writable** (your Desktop, not `Program Files`).
+            It saves `config.json` beside itself, which is where your
+            calibration and camera choice live.
+
+            ### First run
+
+            1. Run the `.exe`. Windows SmartScreen will warn that the
+               publisher is unknown -- the build is not code-signed. Choose
+               **More info -> Run anyway**.
+            2. Hit **Calibrate** and follow the six prompts (~45 seconds).
+            3. Open the game, click **Play**, then hold a **T-pose** to arm
+               and start.
+
+            Requires Windows 10 or later and a webcam. See the
+            [README](https://github.com/Jackie-Who/cardio-surfers#readme)
+            for how the movement detection works.
