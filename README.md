@@ -118,6 +118,21 @@ jogging straight away.
 
 To stop, click the **X** on the little panel.
 
+## 5. Crashed? Here is how to go again
+
+You will do this a lot, so it is worth learning as one movement:
+
+1. Press **Disarm** on the overlay panel
+2. Click the game's play-again button with your mouse
+3. Hold the **T-pose** again
+
+**Disarm first.** While you are armed, your jogging is still firing keys, and
+those keys land on the game-over screen and skip through menus before you can
+click anything.
+
+Step 3 does two jobs at once: the T-pose re-arms you *and* sends the start key,
+so you are running again the moment you drop your arms.
+
 ---
 
 # How to play
@@ -208,6 +223,12 @@ clicked.
 You need to be jogging. If it locks while you genuinely are jogging, your
 calibration may not match how you actually play — run **Calibrate** again and
 jog at your real playing pace during the last step.
+
+**"I crashed and cannot start a new run"**
+Press **Disarm** on the overlay first, then click the game's play-again button,
+then hold the T-pose. Disarming matters: while armed, your jogging keeps firing
+keys into the game-over screen. See
+[step 5 above](#5-crashed-here-is-how-to-go-again).
 
 **"It jumps when I did not mean to"**
 Your jump line is too low. **Settings** → drag the green line higher.
